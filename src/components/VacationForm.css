@@ -1,0 +1,115 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.vacation-form-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.navbar {
+    background-color: #343a40;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-brand {
+    color: white;
+    font-size: 1.5rem;
+    text-decoration: none;
+}
+
+.navbar-menu {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+}
+
+.container {
+    flex-grow: 1;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.form-container {
+    display: flex;
+    justify-content: center;
+}
+
+.card {
+    background-color: #222;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 500px;
+    color: white;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-select,
+.input-field {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #666;
+    border-radius: 5px;
+    background-color: white;
+    color: black;
+}
+
+.submit-button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.submit-button:hover {
+    background-color: #0056b3;
+}
+
+.success-message {
+    margin-top: 15px;
+    color: #28a745;
+    text-align: center;
+}
+
+.footer {
+    background-color: #343a40;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    margin-top: auto;
+}
