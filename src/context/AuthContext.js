@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
                 setCurrentUser(null);
                 setUserRole(null);
             }
-        });
+        }); 
         return () => unsubscribe();
     }, []);
 
