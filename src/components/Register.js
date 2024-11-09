@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { auth } from '../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { setDoc, doc } from 'firebase/firestore';
+import { db } from '../firebase'; // Asegúrate de importar tu configuración de Firestore
 import './Register.css'; // Asegúrate de importar el archivo CSS
 
 const Register = () => {
@@ -11,9 +13,19 @@ const Register = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            console.log("Usuario registrado");
+            // Crear el usuario
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // Crear un documento para el usuario en Firestore
+            await setDoc(doc(db, 'users', user.uid), {
+                email: user.email,
+                role: 'user' // Asignar rol por defecto
+            });
+
+            console.log("Usuario registrado y documento creado en Firestore");
             // Aquí puedes redirigir a otra página o manejar el registro exitoso
+            // Por ejemplo: window.location.href = '/login';
         } catch (error) {
             setErrorMessage(error.message);
         }

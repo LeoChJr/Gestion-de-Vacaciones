@@ -9,10 +9,10 @@ const firebaseConfig = {
   apiKey: "AIzaSyD6aBiMfkyEMpdG2W_n7dhiIHDLBNcn7oM",
   authDomain: "proyecto-vacaciones-d04fb.firebaseapp.com",
   projectId: "proyecto-vacaciones-d04fb",
-  storageBucket: "proyecto-vacaciones-d04fb.appspot.com",
+  storageBucket: "proyecto-vacaciones-d04fb.firebasestorage.app",
   messagingSenderId: "318002782774",
-  appId: "1:318002782774:web:1683e923241dd2b211ee97",
-  measurementId: "G-9QW7HRWK32"
+  appId: "1:318002782774:web:5dae2e2bc0381ca511ee97",
+  measurementId: "G-1XL5GFK5F9"
 };
 
 // Inicializa Firebase
