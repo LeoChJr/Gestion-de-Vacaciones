@@ -21,3 +21,4 @@ const auth = getAuth(app); // Inicializa la autenticación
 const db = getFirestore(app); // Inicializa Firestore
 
 export { app, auth, db }; // Exporta app, auth y db para usarlos en otros componentes
+//nose
