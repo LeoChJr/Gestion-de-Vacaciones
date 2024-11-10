@@ -32,12 +32,12 @@ const Register = () => {
     };
 
     return (
-        <div className="register-container">
-            <div className="card">
-                <h2>REGISTER</h2>
+        <div className="registration-area">
+            <div className="registration-card">
+                <h2 className="registration-title">REGISTER</h2>
                 <p>Please enter your registration details!</p>
                 <form onSubmit={handleSubmit}>
-                    <div className="input-group">
+                    <div className="input-wrapper">
                         <input
                             type="email"
                             className="input-field"
@@ -47,7 +47,7 @@ const Register = () => {
                             required
                         />
                     </div>
-                    <div className="input-group">
+                    <div className="input-wrapper">
                         <input
                             type="password"
                             className="input-field"
@@ -57,10 +57,10 @@ const Register = () => {
                             required
                         />
                     </div>
-                    {errorMessage && <div className="error-message">{errorMessage}</div>}
-                    <button type="submit" className="register-button">REGISTER</button>
+                    {errorMessage && <div className="error-notification">{errorMessage}</div>}
+                    <button type="submit" className="submit-button">REGISTER</button>
                 </form>
-                <p className="signin-link">
+                <p className="login-link">
                     Already have an account? <a href="/login">Sign In</a>
                 </p>
             </div>

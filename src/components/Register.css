@@ -1,10 +1,9 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    
 }
 
-.register-container {
+.registration-area {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,7 +11,7 @@ body {
     background: linear-gradient(135deg, #6e00ff, #3e99ff);
 }
 
-.card {
+.registration-card {
     width: 100%;
     max-width: 400px;
     background-color: #222;
@@ -22,12 +21,12 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
-h2 {
+.registration-title {
     text-align: center;
     margin-bottom: 20px;
 }
 
-.input-group {
+.input-wrapper {
     margin-bottom: 20px;
 }
 
@@ -40,13 +39,13 @@ h2 {
     color: black;
 }
 
-.error-message {
+.error-notification {
     color: red;
     text-align: center;
     margin-bottom: 10px;
 }
 
-.register-button {
+.submit-button {
     width: 100%;
     padding: 10px;
     border: none;
@@ -57,10 +56,10 @@ h2 {
     font-weight: bold;
 }
 
-.register-button:hover {
+.submit-button:hover {
     background-color: #f0f0f0;
 }
 
-.signin-link {
+.login-link {
     text-align: center;
 }

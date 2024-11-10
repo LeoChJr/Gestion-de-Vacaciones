@@ -3,7 +3,7 @@ body {
     font-family: Arial, sans-serif;
 }
 
-.vacation-form-container {
+.vacation-request-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -37,7 +37,7 @@ body {
     text-decoration: underline;
 }
 
-.container {
+.content-container {
     flex-grow: 1;
     padding: 20px;
     text-align: center;
@@ -47,12 +47,12 @@ h1 {
     margin-bottom: 20px;
 }
 
-.form-container {
+.form-wrapper {
     display: flex;
     justify-content: center;
 }
 
-.card {
+.form-card {
     background-color: #222;
     border-radius: 15px;
     padding: 20px;
@@ -66,7 +66,7 @@ h2 {
     margin-bottom: 20px;
 }
 
-.input-group {
+.input-section {
     margin-bottom: 15px;
 }
 
@@ -75,7 +75,6 @@ label {
     margin-bottom: 5px;
 }
 
-.input-select,
 .input-field {
     width: 90%;
     padding: 10px;
@@ -100,7 +99,7 @@ label {
     background-color: #0056b3;
 }
 
-.success-message {
+.notification-message {
     margin-top: 15px;
     color: #28a745;
     text-align: center;

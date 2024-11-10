@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase'; // Asegúrate de importar la instancia de Firestore
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
 import './Login.css'; // Asegúrate de importar el archivo CSS
 
 const Login = () => {
@@ -13,21 +14,33 @@ const Login = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            console.log("Usuario iniciado sesión");
-            navigate('/vacation-form');
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // Obtener el rol del usuario desde Firestore
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                if (userData.role === 'admin') {
+                    navigate('/admin'); // Redirigir a adminPanel si es admin
+                } else {
+                    navigate('/vacation-form'); // Redirigir a vacation-form si es usuario
+                }
+            } else {
+                console.log("No se encontró el documento del usuario.");
+            }
         } catch (error) {
             setErrorMessage(error.message);
         }
     };
 
     return (
-        <div className="login-container">
-            <div className="card">
-                <h2>LOGIN</h2>
+        <div className="login-area">
+            <div className="login-card">
+                <h2 className="login-title">LOGIN</h2>
                 <p>Please enter your login and password!</p>
                 <form onSubmit={handleSubmit}>
-                    <div className="input-group">
+                    <div className="input-wrapper">
                         <input
                             type="email"
                             className="input-field"
@@ -37,7 +50,7 @@ const Login = () => {
                             required
                         />
                     </div>
-                    <div className="input-group">
+                    <div className="input-wrapper">
                         <input
                             type="password"
                             className="input-field"
@@ -47,11 +60,11 @@ const Login = () => {
                             required
                         />
                     </div>
-                    {errorMessage && <div className="error-message">{errorMessage}</div>}
-                    <p className="forgot-password">Forgot password?</p>
-                    <button type="submit" className="login-button">LOGIN</button>
+                    {errorMessage && <div className="error-notification">{errorMessage}</div>}
+                    <p className="password-reset">Forgot password?</p>
+                    <button type="submit" className="submit-button">LOGIN</button>
                 </form>
-                <p className="signup-link">
+                <p className="registration-link">
                     Don’t have an account? <a href="/register">Sign Up</a>
                 </p>
             </div>

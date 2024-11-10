@@ -1,0 +1,38 @@
+/* UserRequests.css */
+
+.user-requests {
+    background-color: #f9f9f9; /* Fondo suave */
+    padding: 20px; /* Espaciado interno */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  }
+  
+  .user-requests h2 {
+    color: #333; /* Color del título */
+    font-size: 24px; /* Tamaño del texto */
+    margin-bottom: 20px; /* Espaciado inferior */
+  }
+  
+  .user-requests p {
+    color: #555; /* Color del texto */
+    font-size: 16px; /* Tamaño del texto */
+    margin: 5px 0; /* Espaciado arriba y abajo */
+  }
+  
+  .user-requests ul {
+    list-style-type: none; /* Eliminar viñetas */
+    padding: 0; /* Eliminar espaciado interno */
+  }
+  
+  .user-requests li {
+    background-color: #fff; /* Fondo blanco para cada solicitud */
+    margin: 10px 0; /* Espaciado entre solicitudes */
+    padding: 15px; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  }
+  
+  .user-requests strong {
+    color: #000; /* Color del texto en negrita */
+  }
+  
