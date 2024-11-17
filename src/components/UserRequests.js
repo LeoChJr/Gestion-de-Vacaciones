@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../firebase"; // Asegúrate de importar la instancia de Firestore
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { useAuth } from '../context/AuthContext';
-import './UserRequests.css'; // Asegúrate de que la ruta sea correcta
+import { useAuth } from "../context/AuthContext";
+import "./UserRequests.css"; // Asegúrate de que la ruta sea correcta
 
 const UserRequests = () => {
   const [requests, setRequests] = useState([]);
@@ -18,18 +18,21 @@ const UserRequests = () => {
 
       try {
         const requestsCollection = collection(db, "vacaciones");
-        const q = query(requestsCollection, where("userId", "==", currentUser.uid));
+        const q = query(
+          requestsCollection,
+          where("userId", "==", currentUser.uid)
+        );
         const requestSnapshot = await getDocs(q);
-        
+
         if (requestSnapshot.empty) {
           console.log("No se encontraron solicitudes para este usuario.");
         } else {
           console.log("Documentos encontrados:", requestSnapshot.docs.length); // Número de documentos encontrados
         }
 
-        const requestList = requestSnapshot.docs.map(doc => ({
+        const requestList = requestSnapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         }));
 
         setRequests(requestList);
@@ -48,17 +51,33 @@ const UserRequests = () => {
         <p>No tienes solicitudes de vacaciones.</p>
       ) : (
         <ul>
-          {requests.map(request => (
+          {requests.map((request) => (
             <li key={request.id}>
-            <p><strong>Email:</strong> {request.email}</p>
+              <p>
+                <strong>Email:</strong> {request.email}
+              </p>
 
-              <p><strong>Nombre:</strong> {request.name} {request.surname}</p>
-              <p><strong>Años:</strong> {request.age}</p>
-              <p><strong>Años de Antigüedad:</strong> {request.seniority}</p>
-              <p><strong>Días solicitados:</strong> {request.days}</p>
-              <p><strong>Fecha de inicio:</strong> {request.startDate}</p>
-              <p><strong>Fecha de finalización:</strong> {request.endDate}</p>
-              <p><strong>Estado:</strong> {request.status || "pendiente"}</p>
+              <p>
+                <strong>Nombre:</strong> {request.name} {request.surname}
+              </p>
+              <p>
+                <strong>Años:</strong> {request.age}
+              </p>
+              <p>
+                <strong>Años de Antigüedad:</strong> {request.seniority}
+              </p>
+              <p>
+                <strong>Días solicitados:</strong> {request.days}
+              </p>
+              <p>
+                <strong>Fecha de inicio:</strong> {request.startDate}
+              </p>
+              <p>
+                <strong>Fecha de finalización:</strong> {request.endDate}
+              </p>
+              <p>
+                <strong>Estado:</strong> {request.status || "pendiente"}
+              </p>
             </li>
           ))}
         </ul>

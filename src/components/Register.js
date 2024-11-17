@@ -1,71 +1,79 @@
-import React, { useState } from 'react';
-import { auth } from '../firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { setDoc, doc } from 'firebase/firestore';
-import { db } from '../firebase'; // Asegúrate de importar tu configuración de Firestore
-import './Register.css'; // Asegúrate de importar el archivo CSS
+import React, { useState } from "react";
+import { auth } from "../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { setDoc, doc } from "firebase/firestore";
+import { db } from "../firebase"; // Asegúrate de importar tu configuración de Firestore
+import "./Register.css"; // Asegúrate de importar el archivo CSS
 
 const Register = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        try {
-            // Crear el usuario
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      // Crear el usuario
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
 
-            // Crear un documento para el usuario en Firestore
-            await setDoc(doc(db, 'users', user.uid), {
-                email: user.email,
-                role: 'user' // Asignar rol por defecto
-            });
+      // Crear un documento para el usuario en Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        email: user.email,
+        role: "user", // Asignar rol por defecto
+      });
 
-            console.log("Usuario registrado y documento creado en Firestore");
-            // Aquí puedes redirigir a otra página o manejar el registro exitoso
-            // Por ejemplo: window.location.href = '/login';
-        } catch (error) {
-            setErrorMessage(error.message);
-        }
-    };
+      console.log("Usuario registrado y documento creado en Firestore");
+      // Aquí puedes redirigir a otra página o manejar el registro exitoso
+      // Por ejemplo: window.location.href = '/login';
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
 
-    return (
-        <div className="registration-area">
-            <div className="registration-card">
-                <h2 className="registration-title">REGISTER</h2>
-                <p>Please enter your registration details!</p>
-                <form onSubmit={handleSubmit}>
-                    <div className="input-wrapper">
-                        <input
-                            type="email"
-                            className="input-field"
-                            placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="input-wrapper">
-                        <input
-                            type="password"
-                            className="input-field"
-                            placeholder="Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-                    {errorMessage && <div className="error-notification">{errorMessage}</div>}
-                    <button type="submit" className="submit-button">REGISTER</button>
-                </form>
-                <p className="login-link">
-                    Already have an account? <a href="/login">Sign In</a>
-                </p>
-            </div>
-        </div>
-    );
+  return (
+    <div className="registration-area">
+      <div className="registration-card">
+        <h2 className="registration-title">Sign Up</h2>
+
+        <form onSubmit={handleSubmit}>
+          <div className="input-wrapper">
+            <input
+              type="email"
+              className="input-field"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-wrapper">
+            <input
+              type="password"
+              className="input-field"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          {errorMessage && (
+            <div className="error-notification">{errorMessage}</div>
+          )}
+          <button type="submit" className="submit-button">
+            REGISTRARSE
+          </button>
+        </form>
+        <p className="login-link">
+          Ya tienes una cuenta? <a href="/login">Iniciar Sesion</a>
+        </p>
+      </div>
+    </div>
+  );
 };
 
 export default Register;

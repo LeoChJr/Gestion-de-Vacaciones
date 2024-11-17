@@ -1,18 +1,18 @@
 import React, { useState } from "react";
-import { auth, db } from "../firebase"; 
+import { auth, db } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
-import { useAuth } from '../context/AuthContext'; 
+import { useAuth } from "../context/AuthContext";
 import "./VacationForm.css";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const VacationForm = () => {
-  const { userRole } = useAuth(); 
+  const { userRole } = useAuth();
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [age, setAge] = useState("");
-  const [seniority, setSeniority] = useState(""); 
-  const [requestedDays, setRequestedDays] = useState(0); 
-  const [totalDays, setTotalDays] = useState(0); 
+  const [seniority, setSeniority] = useState("");
+  const [requestedDays, setRequestedDays] = useState(0);
+  const [totalDays, setTotalDays] = useState(0);
   const [startDate, setStartDate] = useState("");
   const [message, setMessage] = useState("");
 
@@ -22,14 +22,14 @@ const VacationForm = () => {
     let additionalDays = 0;
 
     if (seniority > 15) {
-      additionalDays = 20; 
+      additionalDays = 20;
     } else if (seniority >= 10) {
-      additionalDays = 10; 
+      additionalDays = 10;
     } else if (seniority >= 5) {
-      additionalDays = 5; 
+      additionalDays = 5;
     }
 
-    const vacationDays = requestedDays + additionalDays; 
+    const vacationDays = requestedDays + additionalDays;
     setTotalDays(vacationDays);
 
     const today = new Date().toISOString().split("T")[0];
@@ -40,8 +40,8 @@ const VacationForm = () => {
 
     const start = new Date(startDate);
     const end = new Date(start);
-    end.setDate(start.getDate() + vacationDays); 
-    const endDate = end.toISOString().split("T")[0]; 
+    end.setDate(start.getDate() + vacationDays);
+    const endDate = end.toISOString().split("T")[0];
 
     try {
       const user = auth.currentUser;
@@ -52,13 +52,13 @@ const VacationForm = () => {
 
       // Verificar los datos que se enviarán
       const vacationRequest = {
-        userId: user.uid, 
-        email: user.email, 
+        userId: user.uid,
+        email: user.email,
         name,
         surname,
         age: Number(age),
-        seniority: Number(seniority), 
-        days: vacationDays, 
+        seniority: Number(seniority),
+        days: vacationDays,
         startDate,
         endDate,
         status: "pendiente", // Agregar el estado como "pendiente"
@@ -66,7 +66,9 @@ const VacationForm = () => {
       console.log("Datos a enviar a Firestore:", vacationRequest);
 
       await addDoc(collection(db, "vacaciones"), vacationRequest);
-      setMessage(`Solicitud enviada: ${vacationDays} día(s) desde ${startDate} hasta ${endDate}.`);
+      setMessage(
+        `Solicitud enviada: ${vacationDays} día(s) desde ${startDate} hasta ${endDate}.`
+      );
       setTotalDays(0);
       setRequestedDays(0);
       setStartDate("");
@@ -84,22 +86,26 @@ const VacationForm = () => {
     <div className="vacation-request-container">
       <nav className="navbar">
         <a className="navbar-brand" href="#">
-          Mi Empresa
+          KIRO
         </a>
         <div className="navbar-menu">
-          
           <Link className="nav-link" to="/user-requests">
-      Solicitudes
-    </Link>
-          <a className="nav-link" href="#">
-            Cerrar Sesión
-          </a>
+            Solicitudes
+          </Link>
+
+          <Link className="nav-link" to="/login">
+            Cerrar Sesion
+          </Link>
         </div>
       </nav>
       <div className="content-container">
         <h1>Bienvenido al Sistema de Solicitudes de Vacaciones</h1>
-        {userRole === 'admin' && <p>Bienvenido, Admin. Puedes gestionar las solicitudes aquí.</p>}
-        {userRole === 'user' && <p>Bienvenido, Usuario. Puedes enviar tu solicitud de vacaciones.</p>}
+        {userRole === "admin" && (
+          <p>Bienvenido, Admin. Puedes gestionar las solicitudes aquí.</p>
+        )}
+        {userRole === "user" && (
+          <p>Bienvenido, Usuario. Puedes enviar tu solicitud de vacaciones.</p>
+        )}
         <p>
           Aquí puedes solicitar tus días de vacaciones y ver el estado de tus
           solicitudes.
@@ -142,7 +148,9 @@ const VacationForm = () => {
                 />
               </div>
               <div className="input-section">
-                <label htmlFor="seniority">Antigüedad en la Empresa (años):</label>
+                <label htmlFor="seniority">
+                  Antigüedad en la Empresa (años):
+                </label>
                 <input
                   type="number"
                   id="seniority"
@@ -153,7 +161,9 @@ const VacationForm = () => {
                 />
               </div>
               <div className="input-section">
-                <label htmlFor="requestedDays">Días de Vacaciones Solicitados:</label>
+                <label htmlFor="requestedDays">
+                  Días de Vacaciones Solicitados:
+                </label>
                 <input
                   type="number"
                   id="requestedDays"
@@ -183,7 +193,7 @@ const VacationForm = () => {
         </div>
       </div>
       <footer className="footer">
-        <p>© 2023 Mi Empresa. Todos los derechos reservados.</p>
+        <p>© 2024 KIRO. Todos los derechos reservados.</p>
       </footer>
     </div>
   );
