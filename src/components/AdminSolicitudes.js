@@ -1,65 +1,33 @@
 import React, { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import { db } from "../firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { useAuth } from "../context/AuthContext";
+import { collection, getDocs, query, where, updateDoc, doc } from "firebase/firestore";
 import "react-calendar/dist/Calendar.css";
-import "./UserRequests.css";
+import "./AdminSolicitudes.css";
 
-const UserRequests = () => {
+const AdminSolicitudes = () => {
   const [requests, setRequests] = useState([]);
-  const { currentUser } = useAuth();
-
-  useEffect(() => {
-    const fetchUserRequests = async () => {
-      if (!currentUser) {
-        console.log("No hay usuario autenticado.");
-        return;
-      }
   
+  useEffect(() => {
+    const fetchRequests = async () => {
       try {
         const requestsCollection = collection(db, "vacaciones");
-  
-        // Consulta por "userId"
-        const qUserId = query(
-          requestsCollection,
-          where("userId", "==", currentUser.uid)
-        );
-        const requestSnapshotUserId = await getDocs(qUserId);
-        const requestListUserId = requestSnapshotUserId.docs.map((doc) => ({
+
+        // Consulta para obtener todas las solicitudes
+        const requestSnapshot = await getDocs(requestsCollection);
+        const requestList = requestSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-  
-        // Consulta por "uid"
-        const qUid = query(
-          requestsCollection,
-          where("uid", "==", currentUser.uid)
-        );
-        const requestSnapshotUid = await getDocs(qUid);
-        const requestListUid = requestSnapshotUid.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-  
-        // Combina las solicitudes de ambas consultas
-        const allRequests = [...requestListUserId, ...requestListUid];
-  
-        // Eliminar duplicados si existen (si un documento aparece en ambas consultas)
-        const uniqueRequests = allRequests.filter(
-          (value, index, self) =>
-            index === self.findIndex((t) => t.id === value.id)
-        );
-  
-        setRequests(uniqueRequests);
+
+        setRequests(requestList);
       } catch (error) {
         console.error("Error al obtener solicitudes:", error);
       }
     };
-  
-    fetchUserRequests();
-  }, [currentUser]);
-  
+
+    fetchRequests();
+  }, []);
 
   // Función para aplicar clases a las fechas del calendario
   const tileClassName = (request, date, view) => {
@@ -96,11 +64,33 @@ const UserRequests = () => {
     }
   };
 
+  // Función para aceptar una solicitud
+  const aceptarSolicitud = async (id) => {
+    const solicitudRef = doc(db, "vacaciones", id);
+    await updateDoc(solicitudRef, { status: "aceptado" });
+    setRequests(
+      requests.map((solicitud) =>
+        solicitud.id === id ? { ...solicitud, status: "aceptado" } : solicitud
+      )
+    );
+  };
+
+  // Función para rechazar una solicitud
+  const rechazarSolicitud = async (id) => {
+    const solicitudRef = doc(db, "vacaciones", id);
+    await updateDoc(solicitudRef, { status: "rechazado" });
+    setRequests(
+      requests.map((solicitud) =>
+        solicitud.id === id ? { ...solicitud, status: "rechazado" } : solicitud
+      )
+    );
+  };
+
   return (
-    <div className="user-requests">
-      <h2>Mis Solicitudes</h2>
+    <div className="admin-solicitudes">
+      <h2>Administración de Solicitudes</h2>
       {requests.length === 0 ? (
-        <p>No tienes solicitudes de vacaciones.</p>
+        <p>No hay solicitudes de vacaciones.</p>
       ) : (
         <div className="requests-container">
           {requests.map((request) => (
@@ -133,11 +123,18 @@ const UserRequests = () => {
               <p>
                 <strong>Estado:</strong> {request.status || "pendiente"}
               </p>
-              <Calendar
-                tileClassName={({ date, view }) =>
-                  tileClassName(request, date, view)
-                }
-              />
+
+              <div className="calendar-container">
+                <Calendar
+                  tileClassName={({ date, view }) =>
+                    tileClassName(request, date, view)
+                  }
+                />
+              </div>
+
+              <div className="actions">
+                
+              </div>
             </div>
           ))}
         </div>
@@ -146,4 +143,4 @@ const UserRequests = () => {
   );
 };
 
-export default UserRequests;
+export default AdminSolicitudes;

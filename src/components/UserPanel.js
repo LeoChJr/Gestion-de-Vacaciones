@@ -1,167 +1,181 @@
 import React, { useState } from "react";
-import { db } from "../firebase";
-import { setDoc, doc } from "firebase/firestore"; // Para guardar los datos en Firestore
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom"; // Para la navegación
-import "./UserPanel.css";  // Asegúrate de importar solo en este componente
+import { db } from "../firebase"; // Configuración de Firebase
+import { collection, addDoc, doc, setDoc } from "firebase/firestore";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate
+import "./UserPanel.css";
 
 const UserPanel = () => {
-  const { currentUser } = useAuth(); // Obtenemos el usuario actual
-  const navigate = useNavigate(); // Instanciamos useNavigate para redirigir
+  const navigate = useNavigate(); // Hook para la navegación
 
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [age, setAge] = useState("");
-  const [seniority, setSeniority] = useState("");
-  const [requestedDays, setRequestedDays] = useState(0);
-  const [totalDays, setTotalDays] = useState(0);
-  const [startDate, setStartDate] = useState("");
-  const [message, setMessage] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    name: "",
+    surname: "",
+    age: "",
+    seniority: "",
+    days: "",
+    startDate: "",
+    password: "", // Nuevo campo para la contraseña
+  });
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-  
-    let additionalDays = 0;
-  
-    // Calculamos los días adicionales dependiendo de la antigüedad
-    if (seniority > 15) {
-      additionalDays = 20;
-    } else if (seniority >= 10) {
-      additionalDays = 10;
-    } else if (seniority >= 5) {
-      additionalDays = 5;
-    }
-  
-    const vacationDays = requestedDays + additionalDays; // Total de días de vacaciones
-    setTotalDays(vacationDays);
-  
-    // Verificación de la fecha de inicio
-    const today = new Date().toISOString().split("T")[0];
-    if (startDate < today) {
-      setMessage("La fecha de inicio debe ser hoy o en el futuro.");
-      return;
-    }
-  
-    // Calculando la fecha de finalización
-    const start = new Date(startDate);
-    const end = new Date(start);
-    end.setDate(start.getDate() + vacationDays);
-    const endDate = end.toISOString().split("T")[0];
-  
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const auth = getAuth();
+
     try {
-      if (!currentUser) {
-        setMessage("Debes iniciar sesión para completar el formulario.");
-        return;
-      }
-  
-      // Creamos una referencia al documento de usuario usando su email
-      const userRef = doc(db, "users", currentUser.email); // Usamos el correo como ID de documento
-      const userData = {
-        name,
-        surname,
-        age: Number(age),
-        seniority: Number(seniority),
-        requestedDays,
-        totalDays: vacationDays,
-        startDate,
-        endDate,
-      };
-  
-      // Guardamos los datos en Firestore
-      await setDoc(userRef, userData);
-      setMessage("Datos guardados correctamente");
-      setTotalDays(0);
-      setRequestedDays(0);
-      setStartDate("");
-      setName("");
-      setSurname("");
-      setAge("");
-      setSeniority("");
+      // Crear usuario en la autenticación de Firebase
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+
+      const userId = userCredential.user.uid;
+
+      // Guardar en la colección "vacaciones"
+      await addDoc(collection(db, "vacaciones"), {
+        ...formData,
+        status: "pendiente", // Estado inicial
+        uid: userId, // Relacionar con la autenticación
+      });
+
+      // Guardar en la colección "users" con el mismo UID
+      await setDoc(doc(db, "users", userId), {
+        email: formData.email,
+        name: formData.name,
+        surname: formData.surname,
+        age: formData.age,
+        seniority: formData.seniority,
+        startDate: formData.startDate,
+      });
+
+      alert("Solicitud, usuario y datos adicionales guardados correctamente.");
+      setFormData({
+        email: "",
+        name: "",
+        surname: "",
+        age: "",
+        seniority: "",
+        days: "",
+        startDate: "",
+        password: "",
+      }); // Resetear el formulario
     } catch (error) {
-      console.error("Error al guardar los datos:", error);
-      setMessage("Error al guardar los datos. Inténtalo de nuevo.");
+      console.error("Error al guardar la solicitud y los datos del usuario:", error);
+      alert("Error al guardar la solicitud y los datos del usuario.");
     }
   };
-  
 
-  const volver = () => {
-    navigate("/admin"); // Redirige a la página de administración
+  const handleBack = () => {
+    navigate("/admin"); // Cambia "/" por la ruta a la que quieres que regrese
   };
 
   return (
     <div className="user-panel-container">
-      <h2>Formulario de Datos del Usuario</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="name">Nombre:</label>
+      <h2>Formulario de Solicitud de Vacaciones</h2>
+      <form className="user-form" onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Email:</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Contraseña:</label>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Nombre:</label>
           <input
             type="text"
-            id="name"
             name="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={formData.name}
+            onChange={handleInputChange}
             required
           />
         </div>
-        <div>
-          <label htmlFor="surname">Apellido:</label>
+        <div className="form-group">
+          <label>Apellido:</label>
           <input
             type="text"
-            id="surname"
             name="surname"
-            value={surname}
-            onChange={(e) => setSurname(e.target.value)}
+            value={formData.surname}
+            onChange={handleInputChange}
             required
           />
         </div>
-        <div>
-          <label htmlFor="age">Edad:</label>
+        <div className="form-group">
+          <label>Edad:</label>
           <input
             type="number"
-            id="age"
             name="age"
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
+            value={formData.age}
+            onChange={handleInputChange}
             required
           />
         </div>
-        <div>
-          <label htmlFor="seniority">Antigüedad en la Empresa (años):</label>
+        <div className="form-group">
+          <label>Antigüedad en la empresa (años):</label>
           <input
             type="number"
-            id="seniority"
             name="seniority"
-            value={seniority}
-            onChange={(e) => setSeniority(e.target.value)}
+            value={formData.seniority}
+            onChange={handleInputChange}
             required
           />
         </div>
-        <div>
-          <label htmlFor="requestedDays">Días de Vacaciones Solicitados:</label>
+        <div className="form-group">
+          <label>Días solicitados:</label>
           <input
             type="number"
-            id="requestedDays"
-            name="requestedDays"
-            value={requestedDays}
-            onChange={(e) => setRequestedDays(Number(e.target.value))}
+            name="days"
+            value={formData.days}
+            onChange={handleInputChange}
             required
           />
         </div>
-        <div>
-          <label htmlFor="startDate">Fecha de Inicio:</label>
+        <div className="form-group">
+          <label>Fecha de Inicio:</label>
           <input
             type="date"
-            id="startDate"
             name="startDate"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            value={formData.startDate}
+            onChange={handleInputChange}
             required
           />
         </div>
-        <button type="submit">Guardar Datos</button>
-        <button type="button" onClick={volver}>Volver</button>
+        <div className="form-buttons">
+          <button type="submit" className="submit-button">
+            Guardar
+          </button>
+          <button
+            type="button"
+            className="back-button"
+            onClick={handleBack}
+          >
+            Volver
+          </button>
+        </div>
       </form>
-      {message && <div className="notification-message">{message}</div>}
     </div>
   );
 };

@@ -8,7 +8,7 @@ import UserRequests from './components/UserRequests';
 import AdminPanel from './components/AdminPanel';
 import PrivateRoute from './components/PrivateRoute';
 import UserPanel from './components/UserPanel'; // Importa UserPanel
-
+import AdminSolicitudes from './components/AdminSolicitudes';
 const App = () => {
   return (
     <AuthProvider>
@@ -22,6 +22,8 @@ const App = () => {
             <Route path="/user-requests" element={<PrivateRoute element={<UserRequests />} />} />
             <Route path="/admin" element={<PrivateRoute element={<AdminPanel />} roleRequired="admin" />} />
             <Route path="/user-panel" element={<PrivateRoute element={<UserPanel />} />} /> {/* Ruta para el Panel de Usuario */}
+            <Route path="/AdminSolis" element={<AdminSolicitudes />} />
+
             <Route path="/" element={<Navigate to="/login" />} />
           </Routes>
         </div>

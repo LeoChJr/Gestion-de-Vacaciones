@@ -5,7 +5,6 @@ import "./AdminPanel.css";
 import { getAuth, signOut } from "firebase/auth"; // Importar Firebase Auth
 import { Link } from "react-router-dom"; // Para manejar la navegación entre páginas
 
-
 const AdminPanel = () => {
   const [solicitudes, setSolicitudes] = useState([]);
   const [editandoId, setEditandoId] = useState(null); // ID de la solicitud en edición
@@ -23,6 +22,7 @@ const AdminPanel = () => {
     };
     obtenerSolicitudes();
   }, []);
+
   const cerrarSesion = () => {
     const auth = getAuth();
     signOut(auth)
@@ -97,31 +97,35 @@ const AdminPanel = () => {
   };
 
   return (
-    
     <div className="admin-panel-container">
       <nav className="navbar">
-      <h2 className="navbar-title">Panel de Administración</h2>
-      <div className="navbar-links">
-        <Link to="/user-panel" className="nav-link">
-          Panel de Usuario
-        </Link>
-        <button className="logout-button" onClick={cerrarSesion}>
-          Cerrar Sesión
-        </button>
-      </div>
-    </nav>
+        <h2 className="navbar-title">Panel de Administración</h2>
+        <div className="navbar-links">
+          <Link to="/user-panel" className="nav-link">
+            Panel de Usuario
+          </Link>
+          <Link to="/AdminSolis" className="nav-link">
+            Solicitudes
+          </Link>
+          <button className="logout-button" onClick={cerrarSesion}>
+            Cerrar Sesión
+          </button>
+        </div>
+      </nav>
+
       <h2 className="admin-panel-title">Panel de Administración de Solicitudes</h2>
-      
+
       <table className="solicitudes-table">
-      
         <thead>
           <tr>
             <th>Email</th>
             <th>Nombre</th>
+            <th>Apellido</th>
             <th>Edad</th>
             <th>Antigüedad</th>
             <th>Días Solicitados</th>
             <th>Fecha de Inicio</th>
+            <th>Fecha Fin</th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
@@ -146,6 +150,8 @@ const AdminPanel = () => {
                       defaultValue={solicitud.name}
                       onChange={manejarCambio}
                     />
+                  </td>
+                  <td>
                     <input
                       type="text"
                       name="surname"
@@ -185,6 +191,18 @@ const AdminPanel = () => {
                       onChange={manejarCambio}
                     />
                   </td>
+                  <td>
+                    {/** Fecha Fin Calculada */}
+                    {solicitud.startDate && solicitud.days ? (
+                      new Date(
+                        new Date(solicitud.startDate).setDate(
+                          new Date(solicitud.startDate).getDate() + solicitud.days
+                        )
+                      ).toLocaleDateString()
+                    ) : (
+                      "N/A"
+                    )}
+                  </td>
                   <td>{solicitud.status}</td>
                   <td>
                     <button
@@ -204,13 +222,24 @@ const AdminPanel = () => {
               ) : (
                 <>
                   <td>{solicitud.email}</td>
-                  <td>
-                    {solicitud.name} {solicitud.surname}
-                  </td>
+                  <td>{solicitud.name}</td>
+                  <td>{solicitud.surname}</td>
                   <td>{solicitud.age}</td>
                   <td>{solicitud.seniority}</td>
                   <td>{solicitud.days}</td>
                   <td>{solicitud.startDate}</td>
+                  <td>
+                    {/** Fecha Fin Calculada */}
+                    {solicitud.startDate && solicitud.days ? (
+                      new Date(
+                        new Date(solicitud.startDate).setDate(
+                          new Date(solicitud.startDate).getDate() + solicitud.days
+                        )
+                      ).toLocaleDateString()
+                    ) : (
+                      "N/A"
+                    )}
+                  </td>
                   <td
                     className={
                       solicitud.status === "aceptado"
@@ -243,7 +272,7 @@ const AdminPanel = () => {
                       className="edit-button"
                       onClick={() => modificarSolicitud(solicitud.id)}
                     >
-                      Modificar
+                      Editar
                     </button>
                     <button
                       className="delete-button"

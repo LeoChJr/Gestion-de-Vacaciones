@@ -1,0 +1,65 @@
+.admin-solicitudes {
+    padding: 20px;
+  }
+  
+  .requests-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .request-card {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 8px;
+    width: 300px;
+    background-color: #f9f9f9;
+  }
+  
+  .request-card.accepted {
+    background-color: #d4edda;
+  }
+  
+  .request-card.rejected {
+    background-color: #f8d7da;
+  }
+  
+  .request-card.pending {
+    background-color: #fff3cd;
+  }
+  
+  button {
+    margin-top: 10px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .accept-button {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .reject-button {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  
+  .calendar-container {
+    margin-top: 15px;
+  }
+  
+  .past-days {
+    background-color: #f8d7da;
+  }
+  
+  .vacation-days {
+    background-color: #d4edda;
+  }
+  

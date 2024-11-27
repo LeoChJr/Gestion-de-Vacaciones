@@ -6,6 +6,9 @@ import { db } from "../firebase"; // Asegúrate de importar tu configuración de
 import "./Register.css"; // Asegúrate de importar el archivo CSS
 
 const Register = () => {
+  const [name, setName] = useState(""); // Nuevo estado para el nombre
+  const [surname, setSurname] = useState(""); // Nuevo estado para el apellido
+  const [age, setAge] = useState(""); // Nuevo estado para la edad
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -23,6 +26,9 @@ const Register = () => {
 
       // Crear un documento para el usuario en Firestore
       await setDoc(doc(db, "users", user.uid), {
+        name, // Guardar el nombre
+        surname, // Guardar el apellido
+        age: Number(age), // Guardar la edad como número
         email: user.email,
         role: "user", // Asignar rol por defecto
       });
@@ -41,6 +47,36 @@ const Register = () => {
         <h2 className="registration-title">Sign Up</h2>
 
         <form onSubmit={handleSubmit}>
+          <div className="input-wrapper">
+            <input
+              type="text"
+              className="input-field"
+              placeholder="Nombre"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-wrapper">
+            <input
+              type="text"
+              className="input-field"
+              placeholder="Apellido"
+              value={surname}
+              onChange={(e) => setSurname(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-wrapper">
+            <input
+              type="number"
+              className="input-field"
+              placeholder="Edad"
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
+              required
+            />
+          </div>
           <div className="input-wrapper">
             <input
               type="email"
